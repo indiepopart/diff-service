@@ -1,47 +1,53 @@
 package com.waes.model;
 
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Body")
 public class Body {
 
-	@Id	
-	private Long id;
+	@NotNull
+	private byte[] body;
 	
-	private String body;
-	
-	private DiffSide side;
+	@EmbeddedId
+	private BodyId id;
 
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
-	public DiffSide getSide() {
-		return side;
-	}
-
-	public void setSide(DiffSide side) {
-		this.side = side;
-	}
-
-	
-	
 	public Body() {
 		super();
 	}
-
-	public Body(Long id, String body, DiffSide side) {
+	
+	public Body(BodyId id, @NotNull byte[] body) {
 		super();
-		this.id = id;
 		this.body = body;
-		this.side = side;
+		this.id = id;
+	}
+
+	public Body(Long id, DiffSide diffSide, byte[] payload) {
+		this(new BodyId(id, diffSide), payload);
+	}
+	
+	public BodyId getId() {
+		return id;
+	}
+
+	public void setId(BodyId id) {
+		this.id = id;
+	}
+
+	@Lob
+	@NotNull
+	@Column(name = "body", columnDefinition="BLOB")
+	public byte[] getBody() {
+		return body;
+	}
+
+	public void setBody(byte[] body) {
+		this.body = body;
 	}
 
 }
