@@ -68,14 +68,14 @@ public class DiffControllerIntegrationTest {
     }
     
     @Test
-    public void givenBody_whenSaveLeftWithOtherContentType_thenReturn415() throws Exception {
+    public void givenBody_whenSaveWithUnsupportedContentType_thenReturn415() throws Exception {
 		mvc.perform(post("/v1/diff/3/left")
 				.contentType(MediaType.APPLICATION_XML))
 				.andExpect(status().is(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
     }
 
     @Test
-    public void givenBody_whenSaveWithInvalidBase64Payload_thenReturn422() throws Exception {
+    public void givenInvalidBase64Body_whenSave_thenReturn422() throws Exception {
 		mvc.perform(post("/v1/diff/4/left")
 				.content(objectMapper.writeValueAsString(new DataPayload("SGVsbG8gV0FFUw=")))
 				.contentType(MediaType.APPLICATION_JSON))
@@ -97,10 +97,18 @@ public class DiffControllerIntegrationTest {
     public void givenMissingLeftBody_whenGetDiff_thenReturnNotFound() throws Exception {
     		// Given same body
     		diffService.saveBody(new Body(6L, DiffSide.RIGHT, "abc".getBytes()));
-
     		
     		mvc.perform(get("/v1/diff/6")
     				.contentType(MediaType.APPLICATION_JSON))
     				.andExpect(status().is(HttpStatus.BAD_REQUEST.value()));    		
     }
+    
+    @Test
+    public void givenEmptyBody_whenSave_thenReturn422() throws Exception {
+		mvc.perform(post("/v1/diff/7/left")
+				.content(objectMapper.writeValueAsString(new DataPayload("")))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.UNPROCESSABLE_ENTITY.value()));
+    }
+    
 }

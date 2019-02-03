@@ -5,6 +5,7 @@ import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,8 @@ public class DiffController {
 	@ApiOperation(value = "Save a binary data body for a left side of comparison")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = ""),
-			@ApiResponse(code = 422, message = "Invalid body")})
+			@ApiResponse(code = 422, message = "Invalid/Empty base64 body"),
+			@ApiResponse(code = 400, message = "Bad Request")})
 	@RequestMapping(value="/{id}/left", method=RequestMethod.POST)
 	@ResponseBody
 	public void left(@PathVariable Long id, @RequestBody DataPayload payload) {
@@ -42,7 +44,8 @@ public class DiffController {
 	@ApiOperation(value = "Save a binary data body for a right side of comparison")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = ""),
-			@ApiResponse(code = 422, message = "Invalid body")})
+			@ApiResponse(code = 422, message = "Invalid/Empty base64 body"),
+			@ApiResponse(code = 400, message = "Bad Request")})
 	@RequestMapping(value="/{id}/right", method=RequestMethod.POST)
 	@ResponseBody
 	public void right(@PathVariable Long id, @RequestBody DataPayload payload) {
@@ -50,12 +53,16 @@ public class DiffController {
 	}
 	
 	protected void saveBody(Long id, DataPayload payload, DiffSide diffSide) {
+		if (StringUtils.isEmpty(payload.getBase64())) {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Empty base64 body");
+		}
+
 		try {
 			byte[] decodedBytes = Base64.getDecoder().decode(payload.getBase64());
 			Body body = new Body(id, diffSide, decodedBytes);
 			diffService.saveBody(body);				
 		} catch (IllegalArgumentException e) {
-			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid body", e);
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid base64 body", e);
 		}
 	}
 	
