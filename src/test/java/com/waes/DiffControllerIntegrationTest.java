@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,7 +41,7 @@ public class DiffControllerIntegrationTest {
     @Test
     public void givenBody_whenSaveLeft_thenReturn200() throws Exception {
 		mvc.perform(post("/v1/diff/1/left")
-				.content(objectMapper.writeValueAsString(new Payload("abc")))
+				.content(objectMapper.writeValueAsString(new DataPayload("abc")))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
     	
@@ -49,7 +50,7 @@ public class DiffControllerIntegrationTest {
     @Test
     public void givenBody_whenSaveRight_thenReturn200() throws Exception {
 		mvc.perform(post("/v1/diff/1/right")
-				.content(objectMapper.writeValueAsString(new Payload("abc")))
+				.content(objectMapper.writeValueAsString(new DataPayload("abc")))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
     	
@@ -63,7 +64,21 @@ public class DiffControllerIntegrationTest {
     		
     		mvc.perform(get("/v1/diff/1")
     				.contentType(MediaType.APPLICATION_JSON))
-    				.andExpect(status().isOk());
-    		
+    				.andExpect(status().isOk());    		
+    }
+    
+    @Test
+    public void givenBody_whenSaveLeftWithOtherContentType_thenReturn415() throws Exception {
+		mvc.perform(post("/v1/diff/1/left")
+				.contentType(MediaType.APPLICATION_XML))
+				.andExpect(status().is(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
+    }
+
+    @Test
+    public void givenBody_whenSaveWithInvalidBase64Payload_thenReturn422() throws Exception {
+		mvc.perform(post("/v1/diff/1/left")
+				.content(objectMapper.writeValueAsString(new DataPayload("SGVsbG8gV0FFUw=")))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(HttpStatus.UNPROCESSABLE_ENTITY.value()));
     }
 }

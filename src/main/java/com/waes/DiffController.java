@@ -23,18 +23,24 @@ public class DiffController {
 	
 	@RequestMapping(value="/v1/diff/{id}/left", method=RequestMethod.POST)
 	@ResponseBody
-	public void left(@PathVariable Long id, @RequestBody Payload payload) {
-		byte[] decodedBytes = Base64.getDecoder().decode(payload.getBase64());
-		Body body = new Body(id, DiffSide.LEFT, decodedBytes);
-		diffService.saveBody(body);
+	public void left(@PathVariable Long id, @RequestBody DataPayload payload) {
+		saveBody(id, payload, DiffSide.LEFT);
 	}
 
 	@RequestMapping(value="/v1/diff/{id}/right", method=RequestMethod.POST)
 	@ResponseBody
-	public void right(@PathVariable Long id, @RequestBody Payload payload) {
-		byte[] decodedBytes = Base64.getDecoder().decode(payload.getBase64());
-		Body body = new Body(id, DiffSide.RIGHT, decodedBytes);
-		diffService.saveBody(body);		
+	public void right(@PathVariable Long id, @RequestBody DataPayload payload) {
+		saveBody(id, payload, DiffSide.RIGHT);
+	}
+	
+	protected void saveBody(Long id, DataPayload payload, DiffSide diffSide) {
+		try {
+			byte[] decodedBytes = Base64.getDecoder().decode(payload.getBase64());
+			Body body = new Body(id, diffSide, decodedBytes);
+			diffService.saveBody(body);				
+		} catch (IllegalArgumentException e) {
+			throw new DiffControllerInvalidBody(e);
+		}
 	}
 	
 	@RequestMapping(value="/v1/diff/{id}", method=RequestMethod.GET)

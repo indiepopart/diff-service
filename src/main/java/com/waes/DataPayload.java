@@ -1,14 +1,14 @@
 package com.waes;
 
-public class Payload {
+public class DataPayload {
 
 	protected String base64;
 
-	public Payload(String base64) {
+	public DataPayload(String base64) {
 		this.base64 = base64;
 	}
 	
-	public Payload() {
+	public DataPayload() {
 	}
 
 	public String getBase64() {
