@@ -18,19 +18,32 @@ import com.waes.service.DiffResult;
 import com.waes.service.DiffService;
 import com.waes.service.DiffServiceException;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Controller
+@RequestMapping(value="/v1/diff")
 public class DiffController {
 	
 	@Autowired
 	protected DiffService diffService;
 	
-	@RequestMapping(value="/v1/diff/{id}/left", method=RequestMethod.POST)
+	@ApiOperation(value = "Save a binary data body for a left side of comparison")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = ""),
+			@ApiResponse(code = 422, message = "Invalid body")})
+	@RequestMapping(value="/{id}/left", method=RequestMethod.POST)
 	@ResponseBody
 	public void left(@PathVariable Long id, @RequestBody DataPayload payload) {
 		saveBody(id, payload, DiffSide.LEFT);
 	}
 
-	@RequestMapping(value="/v1/diff/{id}/right", method=RequestMethod.POST)
+	@ApiOperation(value = "Save a binary data body for a right side of comparison")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = ""),
+			@ApiResponse(code = 422, message = "Invalid body")})
+	@RequestMapping(value="/{id}/right", method=RequestMethod.POST)
 	@ResponseBody
 	public void right(@PathVariable Long id, @RequestBody DataPayload payload) {
 		saveBody(id, payload, DiffSide.RIGHT);
@@ -46,7 +59,11 @@ public class DiffController {
 		}
 	}
 	
-	@RequestMapping(value="/v1/diff/{id}", method=RequestMethod.GET)
+	@ApiOperation(value = "Compare two binary data bodies previously saved")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = ""),
+			@ApiResponse(code = 400, message = "Left/Right not found")})	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
 	public DiffResult diff(@PathVariable Long id) {
 		try {

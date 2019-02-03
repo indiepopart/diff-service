@@ -2,8 +2,6 @@ package com.waes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,7 @@ public class BodyRepositoryIntegrationTest {
 		Body found = bodyRepository.getOne(new BodyId(1L, DiffSide.LEFT));
 		
 		// then
-		assertThat(found.getId().getSide().equals(DiffSide.LEFT));
-		assertThat(Arrays.equals(found.getBody(), payload));
+		assertThat(found.getId().getSide()).isEqualTo(DiffSide.LEFT);
+		assertThat(found.getBody()).containsExactly(payload);
 	}
 }
