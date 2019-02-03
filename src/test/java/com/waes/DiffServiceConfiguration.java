@@ -1,6 +1,6 @@
 package com.waes;
 
-import org.easymock.EasyMock;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 
 import com.waes.model.BodyRepository;
@@ -12,7 +12,7 @@ public class DiffServiceConfiguration {
 	
 	@Bean
 	public BodyRepository bodyRepository() {
-		return EasyMock.createMock(BodyRepository.class);
+		return Mockito.mock(BodyRepository.class);
 	}
 
 	@Bean

@@ -2,10 +2,10 @@ package com.waes;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +38,8 @@ public class DiffServiceTest {
 		Body leftBody = new Body(1L, DiffSide.LEFT, "abc".getBytes());
 		Body rightBody = new Body(2L, DiffSide.RIGHT, "abcd".getBytes());
 
-		EasyMock.reset(bodyRepository);
-		EasyMock.expect(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).andReturn(Optional.of(leftBody));
-		EasyMock.expect(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).andReturn(Optional.of(rightBody));
-		EasyMock.replay(bodyRepository);
-		
+		when(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).thenReturn(Optional.of(leftBody));
+		when(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).thenReturn(Optional.of(rightBody));			
 		
 		// When getDiff
 		DiffResult result = diffService.getDiff(1L, 2L);
@@ -57,11 +54,9 @@ public class DiffServiceTest {
 		// Given same body
 		Body leftBody = new Body(1L, DiffSide.LEFT, "abcd".getBytes());
 		Body rightBody = new Body(2L, DiffSide.RIGHT, "abcd".getBytes());
-		EasyMock.reset(bodyRepository);
-		EasyMock.expect(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).andReturn(Optional.of(leftBody));
-		EasyMock.expect(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).andReturn(Optional.of(rightBody));
-		EasyMock.replay(bodyRepository);
 		
+		when(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).thenReturn(Optional.of(leftBody));
+		when(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).thenReturn(Optional.of(rightBody));
 		
 		// When getDiff
 		DiffResult result = diffService.getDiff(1L, 2L);
@@ -76,11 +71,9 @@ public class DiffServiceTest {
 		// Given same size and different body
 		Body leftBody = new Body(1L, DiffSide.LEFT, "SGVsbG8gbXkgbmFtZSBpcyBqaWWWWWE=".getBytes());
 		Body rightBody = new Body(2L, DiffSide.RIGHT, "SGVsbG8gbXXXXXFtZSBpcyBqaW1lbmE=".getBytes());
-		EasyMock.reset(bodyRepository);
-		EasyMock.expect(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).andReturn(Optional.of(leftBody));
-		EasyMock.expect(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).andReturn(Optional.of(rightBody));
-		EasyMock.replay(bodyRepository);
 		
+		when(bodyRepository.findById(new BodyId(1L, DiffSide.LEFT))).thenReturn(Optional.of(leftBody));
+		when(bodyRepository.findById(new BodyId(2L, DiffSide.RIGHT))).thenReturn(Optional.of(rightBody));		
 		
 		// When getDiff
 		DiffResult result = diffService.getDiff(1L, 2L);
