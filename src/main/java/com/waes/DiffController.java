@@ -3,17 +3,20 @@ package com.waes;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.waes.model.Body;
 import com.waes.model.DiffSide;
 import com.waes.service.DiffResult;
 import com.waes.service.DiffService;
+import com.waes.service.DiffServiceException;
 
 @Controller
 public class DiffController {
@@ -39,13 +42,17 @@ public class DiffController {
 			Body body = new Body(id, diffSide, decodedBytes);
 			diffService.saveBody(body);				
 		} catch (IllegalArgumentException e) {
-			throw new DiffControllerInvalidBody(e);
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid body", e);
 		}
 	}
 	
 	@RequestMapping(value="/v1/diff/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public DiffResult diff(@PathVariable Long id) { 
-		return diffService.getDiff(id, id);
+	public DiffResult diff(@PathVariable Long id) {
+		try {
+			return diffService.getDiff(id, id);
+		} catch (DiffServiceException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		}
 	}
 }

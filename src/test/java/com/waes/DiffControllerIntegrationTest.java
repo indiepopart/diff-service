@@ -59,26 +59,48 @@ public class DiffControllerIntegrationTest {
     @Test
     public void givenSameBody_whenGetDiff_thenReturnEqual() throws Exception {
     		// Given same body
-    		diffService.saveBody(new Body(1L, DiffSide.LEFT, "abc".getBytes()));
-    		diffService.saveBody(new Body(1L, DiffSide.RIGHT, "abc".getBytes()));
+    		diffService.saveBody(new Body(2L, DiffSide.LEFT, "abc".getBytes()));
+    		diffService.saveBody(new Body(2L, DiffSide.RIGHT, "abc".getBytes()));
     		
-    		mvc.perform(get("/v1/diff/1")
+    		mvc.perform(get("/v1/diff/2")
     				.contentType(MediaType.APPLICATION_JSON))
     				.andExpect(status().isOk());    		
     }
     
     @Test
     public void givenBody_whenSaveLeftWithOtherContentType_thenReturn415() throws Exception {
-		mvc.perform(post("/v1/diff/1/left")
+		mvc.perform(post("/v1/diff/3/left")
 				.contentType(MediaType.APPLICATION_XML))
 				.andExpect(status().is(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
     }
 
     @Test
     public void givenBody_whenSaveWithInvalidBase64Payload_thenReturn422() throws Exception {
-		mvc.perform(post("/v1/diff/1/left")
+		mvc.perform(post("/v1/diff/4/left")
 				.content(objectMapper.writeValueAsString(new DataPayload("SGVsbG8gV0FFUw=")))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is(HttpStatus.UNPROCESSABLE_ENTITY.value()));
+    }
+
+    @Test
+    public void givenMissingRightBody_whenGetDiff_thenReturnNotFound() throws Exception {
+    		// Given same body
+    		diffService.saveBody(new Body(5L, DiffSide.LEFT, "abc".getBytes()));
+
+    		
+    		mvc.perform(get("/v1/diff/5")
+    				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is(HttpStatus.BAD_REQUEST.value()));    		
+    }
+    
+    @Test
+    public void givenMissingLeftBody_whenGetDiff_thenReturnNotFound() throws Exception {
+    		// Given same body
+    		diffService.saveBody(new Body(6L, DiffSide.RIGHT, "abc".getBytes()));
+
+    		
+    		mvc.perform(get("/v1/diff/6")
+    				.contentType(MediaType.APPLICATION_JSON))
+    				.andExpect(status().is(HttpStatus.BAD_REQUEST.value()));    		
     }
 }

@@ -24,7 +24,7 @@ public class DiffServiceImpl implements DiffService {
 	protected BodyRepository bodyRepository;
 	
 	@Override
-	public DiffResult getDiff(Long leftId, Long rightId){
+	public DiffResult getDiff(Long leftId, Long rightId) throws DiffServiceException{
 		Optional<Body> left = bodyRepository.findById(new BodyId(leftId, DiffSide.LEFT));
 		if (!left.isPresent()) {
 			throw new DiffServiceException("Left not found");

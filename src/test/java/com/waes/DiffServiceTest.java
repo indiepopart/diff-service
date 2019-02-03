@@ -50,7 +50,7 @@ public class DiffServiceTest {
 	
 
 	@Test
-	public void givenSameBody_whenGetDiff_returnEqual() {
+	public void givenSameBody_whenGetDiff_returnEqual() throws DiffServiceException {
 		// Given same body
 		Body leftBody = new Body(1L, DiffSide.LEFT, "abcd".getBytes());
 		Body rightBody = new Body(2L, DiffSide.RIGHT, "abcd".getBytes());
@@ -67,7 +67,7 @@ public class DiffServiceTest {
 	}
 	
 	@Test
-	public void givenSameSizeAndDifferentBody_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndDifferentBody_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		byte [] lBytes = new byte[] { 1, 1, 1, 1, 4, 4, 1, 1, 1, 1, 1};
 		byte [] rBytes = new byte[] { 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1}; 
@@ -87,7 +87,7 @@ public class DiffServiceTest {
 	}
 
 	@Test
-	public void givenSameSizeAndAllDifferentBody_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndAllDifferentBody_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		Body leftBody = new Body(1L, DiffSide.LEFT, "SmVsb".getBytes());
 		Body rightBody = new Body(2L, DiffSide.RIGHT, "Nzc3N".getBytes());
@@ -107,7 +107,7 @@ public class DiffServiceTest {
 	}
 	
 	@Test
-	public void givenSameSizeAndDifferentHeadBody_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndDifferentHeadBody_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		byte [] lBytes = new byte[] { 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1}; 
 		byte [] rBytes = new byte[] { 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1}; 
@@ -130,7 +130,7 @@ public class DiffServiceTest {
 	}	
 	
 	@Test
-	public void givenSameSizeAndDifferentTailBody_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndDifferentTailBody_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		byte [] lBytes = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2}; 
 		byte [] rBytes = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3}; 
@@ -154,7 +154,7 @@ public class DiffServiceTest {
 	}	
 	
 	@Test
-	public void givenSameSizeAndDifferentHeadByte_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndDifferentHeadByte_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		Body leftBody = new Body(1L, DiffSide.LEFT, new byte[] {1, 4, 4, 4});
 		Body rightBody = new Body(2L, DiffSide.RIGHT, new byte[] {2, 4, 4, 4});
@@ -175,7 +175,7 @@ public class DiffServiceTest {
 	}
 		
 	@Test
-	public void givenSameSizeAndDifferentTailByte_whenGetDiff_returnDiffOffsets() {
+	public void givenSameSizeAndDifferentTailByte_whenGetDiff_returnDiffOffsets() throws DiffServiceException {
 		// Given same size and different body
 		Body leftBody = new Body(1L, DiffSide.LEFT, new byte[] {1, 4, 4, 4});
 		Body rightBody = new Body(2L, DiffSide.RIGHT, new byte[] {1, 4, 4, 3});
